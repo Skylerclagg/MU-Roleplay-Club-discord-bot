@@ -4,7 +4,7 @@ from discord.ext import commands
 import asyncio
 from utils.guild_config import get_guild_config
 from utils.verification import handle_verification_process
-from utils.permissions import mod_check  # Import the central permission check
+from utils.permissions import mod_check
 
 class VerifyAll(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -38,7 +38,8 @@ class VerifyAll(commands.Cog):
                 continue
             if any(r.id in excluded_role_ids for r in member.roles):
                 continue
-            asyncio.create_task(handle_verification_process(member))
+            # FIX: Pass self.bot to the verification process handler
+            asyncio.create_task(handle_verification_process(self.bot, member))
             count += 1
         await interaction.followup.send(f"Started verification process for {count} members.", ephemeral=True)
 
